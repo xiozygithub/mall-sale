@@ -90,6 +90,7 @@ public class CouponActivityServiceImpl implements ICouponActivityService {
     public List<CouponActivityResponse> getCouponCenterList(UserCouponRequest request) {
         // 查询数据库, todo 优化改为查询Redis
         QueryWrapper<CouponActivity> queryWrapper = new QueryWrapper<>();
+        //查询活动状态（可用状态），
         queryWrapper.eq("status", StatusEnum.AVAILABLE.getCode());
         List<CouponActivity> couponActivities = couponActivityMapper.selectList(queryWrapper);
         return couponActivities.stream()
@@ -97,6 +98,7 @@ public class CouponActivityServiceImpl implements ICouponActivityService {
                 //        QueryWrapper<CouponActivityLog> queryWrapper = new QueryWrapper<>();
                 //        queryWrapper.eq("coupon_activity_id", request.getCouponActivityId());
                 //        Integer receivedNumber = couponActivityLogMapper.selectCount(queryWrapper);
+                //此处的0L，实际业务中应该是上面的逻辑，查出来的真实可以领取的数量
                 .map(couponActivity -> buildCouponActivityResponse(couponActivity, 0L))
                 .collect(Collectors.toList());
     }

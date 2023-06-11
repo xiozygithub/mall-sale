@@ -28,10 +28,13 @@ management:
         enabled: true
       jmx:
         enabled: true
+#        springboot监控插件Actuator
   endpoints:
+#    暴露某个端点
     web:
       exposure:
         include: '*'
+#        # 显示health详细信息
   endpoint:
     health:
       show-details: always

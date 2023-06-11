@@ -31,12 +31,13 @@ spring:
       sql:
         show: true
     datasource:
-      # 数据源
+      # 真实数据源名称
       names: shardingmaster
+#      上面的数据源
       shardingmaster:
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://127.0.0.1:3306/mall_user_db?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+        jdbc-url: jdbc:mysql://192.168.204.81:3306/mall_user_db?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
         username: root
         password: root
         hikari:
@@ -45,12 +46,25 @@ spring:
           idle-timeout: 10000
           connection-test-query: select 1
     sharding:
+##         分库写法
+#      default-database-strategy:
+#        inline:
+#          sharding-column: mobile
+#          algorithm-expression: t_user$->{mobile % 2}
+
       tables:
+#        t_user：逻辑表
         t_user:
+#          逻辑表对应的物理表：t_user0、t_user1...t_user6  。Groovy脚本
+#          这里如果分库，也是该脚本,写法如下：shardingmaster$->{0..1}.t_user$->{0..7}，
           actualDataNodes: shardingmaster.t_user$->{0..7}
+#          配置分表策略
           table-strategy:
+#            分片策略：为行表达式
             inline:
+#              分片键：mobile
               sharding-column: mobile
+#              分片策略：t_user后面的数字表示数据分到哪张表，依据为mobile % 8的余数。
               algorithm-expression: t_user$->{mobile % 8}
 
 logging:

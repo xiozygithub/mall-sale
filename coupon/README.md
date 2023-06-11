@@ -49,7 +49,17 @@
 ## 启动命令：
 
 ```
--Xms4g -Xmx4g -Xmn1g -Xss256K -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:MaxTenuringThreshold=6 -XX:+ExplicitGCInvokesConcurrent -XX:+ParallelRefProcEnabled -XX:CMSFullGCsBeforeCompaction=10
+-Xms4g -Xmx4g -Xmn1g -Xss256K 
+-XX:MetaspaceSize=128m 
+-XX:MaxMetaspaceSize=512m 
+-XX:+UseCompressedOops 
+-XX:+UseConcMarkSweepGC 
+-XX:CMSInitiatingOccupancyFraction=75 
+-XX:+UseCMSInitiatingOccupancyOnly 
+-XX:MaxTenuringThreshold=6 
+-XX:+ExplicitGCInvokesConcurrent 
+-XX:+ParallelRefProcEnabled 
+-XX:CMSFullGCsBeforeCompaction=10
 ```
 
 

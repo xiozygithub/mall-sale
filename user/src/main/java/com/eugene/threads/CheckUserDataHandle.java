@@ -31,9 +31,11 @@ public class CheckUserDataHandle implements Callable<List<Long>> {
     public List<Long> call() {
         // 对比后差异的userIdList
         List<Long> diffUserIdList = new ArrayList<>();
+        //据后文得知，这是分表之后新表的用户id的列表
         List<Long> userIdList = users.stream().map(User::getId).collect(Collectors.toList());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("id", userIdList);
+        //在老数据库中，用分表后用户的id进行查询
         List<User> userShardingList = userShardingService.list(queryWrapper);
         // 此处使用了Maps.newHashMapWithExpectedSize(),直接设置预期的容量,避免hashMap扩容带来的性能损耗
         HashMap<Long, User> userShardingMap = userShardingList.stream()

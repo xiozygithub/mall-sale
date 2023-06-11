@@ -16,6 +16,7 @@ import java.util.Date;
 @Data
 public class CouponActivityResponse implements Serializable {
 
+    //一个注释类注解
     @Schema(description = "id")
     private Long id;
     @Schema(description = "活动名称")

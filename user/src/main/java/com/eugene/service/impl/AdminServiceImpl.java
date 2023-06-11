@@ -36,6 +36,7 @@ public class AdminServiceImpl implements IAdminService {
                 public Thread newThread(Runnable r) {
                     return new Thread(r, "thread_pool_user_handle_task_" + r.hashCode());
                 }
+                //不进入线程池执行，在这种方式（CallerRunsPolicy）中，任务将由调用者线程去执行。
             }, new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
@@ -45,6 +46,9 @@ public class AdminServiceImpl implements IAdminService {
     private IUserShardingService userShardingService;
 
 
+    /**
+     * 数据插入
+     */
     @Override
     public void initUser() {
         List<User> userList = new ArrayList<>();
@@ -72,6 +76,7 @@ public class AdminServiceImpl implements IAdminService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         // 根据传入的时间来控制要迁移的数据
         // 查询当前最大的userId
+        //lt：即less then 小于
         queryWrapper.select("max(id) as id").lt("create_time", limitTime);
         User endUser = userService.getOne(queryWrapper);
         System.out.println("endUserId: " + endUser.getId());
@@ -80,7 +85,7 @@ public class AdminServiceImpl implements IAdminService {
             QueryWrapper<User> wrapper = new QueryWrapper<>();
             wrapper.gt("id", startUserId)
                     .lt("create_time", limitTime)
-                    .last("limit 1000");
+                    .last("limit 1000");//每次从旧表中拿出一千条。
             List<User> userList = userService.list(wrapper);
             // 将数据保存到分表后的数据中
             for (User user : userList) {
@@ -138,6 +143,7 @@ public class AdminServiceImpl implements IAdminService {
 
     @SneakyThrows
     @Override
+    //status=1，表示需要自动修正
     public void checkUserData(Integer status) {
         // 检查数据差异，将不一致数据输出
         Long startUserId = 1L;
@@ -147,12 +153,15 @@ public class AdminServiceImpl implements IAdminService {
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.gt("id", startUserId)
                     .last("limit 1000");
+            //得到的是list，里面包含的是众多的完整的user对象
             userList = userService.list(queryWrapper);
             if (CollectionUtil.isEmpty(userList)) {
                 break;
             }
+            //根据id将1000个用户进行分表，map的容量最大一千
             Map<Long, List<User>> userListMap = userList.stream().collect(Collectors.groupingBy(user -> user.getId() % 8));
             for (List<User> users : userListMap.values()) {
+                //CheckUserDataHandle
                 Future<List<Long>> checkUserDataFuture = threadPool.submit(new CheckUserDataHandle(userShardingService, users));
                 List<Long> diffUserList = checkUserDataFuture.get(5, TimeUnit.MINUTES);
                 if (CollectionUtil.isNotEmpty(diffUserList)) {

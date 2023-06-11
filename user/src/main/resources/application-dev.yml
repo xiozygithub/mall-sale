@@ -15,4 +15,4 @@ rocketmq:
   producer:
     group: cluster-group
     send-message-timeout: 10000
-  name-server: 127.0.0.1:9876
+  name-server: 192.168.204.81:9876:9876

@@ -22,9 +22,11 @@ import static com.eugene.pojo.User.converUser;
  * @Author eugene
  * @Data 2023/3/17 12:00
  */
+//多数据源注解
 @Service
 @DS("shardingmaster")
 public class UserShardingServiceImpl extends ServiceImpl<UserMapper, User> implements IUserShardingService {
+
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -62,6 +64,7 @@ public class UserShardingServiceImpl extends ServiceImpl<UserMapper, User> imple
 //        txRegisterUserProducerService.sendHalfMessage(user);
 //        return true;
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

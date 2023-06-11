@@ -27,6 +27,7 @@ public class CouponTemplateController {
     private ICouponTemplateService couponTemplateService;
 
     @PostMapping("/addCouponTemplate")
+    //summary参数是用于描述操作的简短摘要的字符串。它可以用于生成API文档。
     @Operation(summary = "添加优惠券模版信息", description = "添加优惠券模版信息")
     public Response addCouponTemplate(@RequestBody @Valid CouponTemplateRequest request) {
         return Response.success(couponTemplateService.addCouponTemplate(request));

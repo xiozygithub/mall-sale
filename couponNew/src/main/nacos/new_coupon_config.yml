@@ -4,6 +4,10 @@ server:
     io-threads: 8
     worker-threads: 256
   servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
     context-path: /couponNew
 spring:
   jackson:
@@ -15,7 +19,7 @@ spring:
       strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
       datasource:
         master:
-          url: jdbc:mysql://127.0.0.1:3306/mall_coupon_new_db?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+          url: jdbc:mysql://192.168.204.81:3306/mall_coupon_new_db?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
           username: root
           password: root
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,9 +30,11 @@ spring:
             idle-timeout: 10000
             connection-test-query: select 1
   redis:
-    host: 127.0.0.1
+    host: 192.168.204.81
     port: 6379
     database: 1
+
+
 
 logging:
   config: classpath:logback/logback-dev.xml

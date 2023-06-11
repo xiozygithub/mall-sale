@@ -14,6 +14,7 @@ public class mobileUtil {
         StringBuilder behind = new StringBuilder();
         int number[] = {3, 4, 5, 7, 8};  //号码第二位仅有这些
         for (int i = 0; i < 1; i++) {
+            //0-1000之间的整数取模，数值在0.1.2.3.4之间随机
             int randNumber = (int) (Math.random() * 1000) % 5;
             behind.append(String.valueOf(number[randNumber]));
         }

@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @Data
 @TableName("t_coupon_activity")
-@EqualsAndHashCode
+@EqualsAndHashCode //自动为类生成equals(Object other)和hashCode()方法
 public class CouponActivity implements Serializable {
     private static final long serialVersionUID = 3022424369475697485L;
 
@@ -31,8 +31,10 @@ public class CouponActivity implements Serializable {
     private String couponTemplateCode;
     @Schema(description = "券总数量 -999999999不限制", required = true)
     private Long totalNumber;
+
     @Schema(description = "每人可领取数量", required = true)
     private Long limitNumber;
+
     @Schema(description = "优惠券状态：0-不可用 1-可用", required = true)
     private Integer status;
     @Schema(description = "活动开始时间", required = true)
@@ -48,6 +50,7 @@ public class CouponActivity implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    //判断是否存在数量限制，-999999999表示不限制
     public boolean existLimit() {
         return !Long.valueOf(-999999999).equals(this.totalNumber);
     }
