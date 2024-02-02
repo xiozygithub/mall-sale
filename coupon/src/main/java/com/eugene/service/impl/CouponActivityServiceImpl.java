@@ -66,6 +66,7 @@ public class CouponActivityServiceImpl implements ICouponActivityService {
     @Autowired
     private ICouponTemplateCacheService couponTemplateCacheService;
 
+    //新建优惠券活动
     @Override
     public boolean addCouponActivity(AddCouponActivityRequest request) {
         CouponActivity couponActivity = new CouponActivity();
@@ -86,6 +87,7 @@ public class CouponActivityServiceImpl implements ICouponActivityService {
         return result > 0;
     }
 
+    //查询领券中心列表
     @Override
     public List<CouponActivityResponse> getCouponCenterList(UserCouponRequest request) {
         // 查询数据库, todo 优化改为查询Redis
@@ -94,13 +96,14 @@ public class CouponActivityServiceImpl implements ICouponActivityService {
         queryWrapper.eq("status", StatusEnum.AVAILABLE.getCode());
         List<CouponActivity> couponActivities = couponActivityMapper.selectList(queryWrapper);
         return couponActivities.stream()
-                // todo receivedNumber 取真实领取数量 改为查询Redis
-                //        QueryWrapper<CouponActivityLog> queryWrapper = new QueryWrapper<>();
+                //  todo receivedNumber 取真实领取数量 改为查询Redis
+                //       QueryWrapper<CouponActivityLog> queryWrapper = new QueryWrapper<>();
                 //        queryWrapper.eq("coupon_activity_id", request.getCouponActivityId());
                 //        Integer receivedNumber = couponActivityLogMapper.selectCount(queryWrapper);
                 //此处的0L，实际业务中应该是上面的逻辑，查出来的真实可以领取的数量
                 .map(couponActivity -> buildCouponActivityResponse(couponActivity, 0L))
                 .collect(Collectors.toList());
+        //真实领取数量，应该是从下面方法查出来的，可以直接把receivedNumber替换上面的0。
     }
 
     @Override

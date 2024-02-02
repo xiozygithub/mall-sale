@@ -23,6 +23,7 @@ mybatis-plus:
       # 默认数据库表下划线命名
       table-underline: true
 
+# 监控配置
 management:
   server:
     add-application-context-header: false
