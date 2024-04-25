@@ -1,9 +1,6 @@
 package com.eugene.controller;
 
-import com.eugene.controller.request.AddCouponActivityRequest;
-import com.eugene.controller.request.CouponActivityRequest;
-import com.eugene.controller.request.ReceiveCouponRequest;
-import com.eugene.controller.request.UserCouponRequest;
+import com.eugene.controller.request.*;
 import com.eugene.response.Response;
 import com.eugene.service.ICouponActivityService;
 import io.swagger.v3.oas.annotations.Operation;

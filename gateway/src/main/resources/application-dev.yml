@@ -8,14 +8,14 @@ spring:
     nacos:
       config:
         server-addr: 127.0.0.1:8848
-        namespace: 83b65d75-e9bc-4037-9b98-44506f7f3aa2
+        namespace: 4d8cea9e-7a21-42f5-8329-adfb4435beb0
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: 83b65d75-e9bc-4037-9b98-44506f7f3aa2
+        namespace: 4d8cea9e-7a21-42f5-8329-adfb4435beb0
     gateway:
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: 83b65d75-e9bc-4037-9b98-44506f7f3aa2
+        namespace: 4d8cea9e-7a21-42f5-8329-adfb4435beb0
         locator:
           enabled: true
 

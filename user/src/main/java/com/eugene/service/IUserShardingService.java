@@ -2,6 +2,7 @@ package com.eugene.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.eugene.controller.request.RegisterUserRequest;
+import com.eugene.controller.request.UpgradeUserRequest;
 import com.eugene.pojo.User;
 
 import java.util.List;
@@ -30,5 +31,7 @@ public interface IUserShardingService extends IService<User> {
      * 用户注册+事务日志
      */
     boolean registerTx(User user, String transactionId);
+
+    boolean upgradeUser(UpgradeUserRequest request);
 
 }

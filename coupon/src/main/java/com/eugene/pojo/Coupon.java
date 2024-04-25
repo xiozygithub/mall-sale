@@ -67,7 +67,7 @@ public class Coupon implements Serializable {
     public static Coupon buildCoupon(ReceiveCouponRequest request, CouponTemplate CouponTemplate) {
         Coupon coupon = new Coupon();
         coupon.setCouponTemplateCode(CouponTemplate.getCode());
-        coupon.setCode(getCouponCode(CouponTemplate.getId()));
+        coupon.setCode(getCouponCode(CouponTemplate.getId(), 1));
         coupon.setUserId(request.getUserId());
         coupon.setMobile(request.getMobile());
         coupon.setStatus(CouponStatusEnum.AVAILABLE.getCode());

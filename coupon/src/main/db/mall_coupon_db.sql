@@ -191,6 +191,22 @@ CREATE TABLE `t_coupon_activity_log`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 comment '优惠券活动参与记录表';
 
+create table if not exists mall_coupon_db.coupon_job
+(
+    id            int auto_increment
+    primary key,
+    coupon_code   varchar(31) not null comment '用户优惠券code',
+    user_id       text        not null,
+    send_time     datetime    null comment '发券任务执行时间',
+    coupon_num    int         null comment '发券数量',
+    coupon_status tinyint     not null comment '任务状态: 0-未执行 1-已执行',
+    create_time   datetime    null comment '任务创建时间',
+    update_time   datetime    null comment '任务更新时间'
+    )
+    comment '定时发券任务表';
+
+
+
 
 
 

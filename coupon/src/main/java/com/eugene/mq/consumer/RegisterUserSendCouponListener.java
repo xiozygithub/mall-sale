@@ -1,10 +1,13 @@
 package com.eugene.mq.consumer;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eugene.common.enums.IdempotentStatusEnum;
 import com.eugene.common.exception.BusinessException;
 import com.eugene.controller.request.SendCouponRequest;
+import com.eugene.mapper.CouponTemplateMapper;
 import com.eugene.mq.vo.RegisterUserMessage;
+import com.eugene.pojo.CouponTemplate;
 import com.eugene.service.ICouponService;
 import com.eugene.service.IdempotentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 import static com.eugene.common.constant.RocketMqConstant.*;
 
@@ -35,6 +40,8 @@ public class RegisterUserSendCouponListener implements RocketMQListener<MessageE
     private ICouponService couponService;
     @Autowired
     private IdempotentService idempotentService;
+    @Resource
+    private CouponTemplateMapper couponTemplateMapper;
 
     @SneakyThrows
     @Override
@@ -64,8 +71,13 @@ public class RegisterUserSendCouponListener implements RocketMQListener<MessageE
             SendCouponRequest request = new SendCouponRequest();
             request.setUserId(registerUserMessage.getId());
             request.setMobile(registerUserMessage.getMobile());
-            // todo 查询用户发券活动配置
-            request.setCouponTemplateCode("CP1644549976601587712");
+            // todo 查询用户发券活动配置 已完成 理解注册成功后要发券，发券要从券模版表里取 应该根据券模版名称匹配 需要反馈对与错
+            QueryWrapper<CouponTemplate> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("name", "新人注册券");
+            CouponTemplate couponTemplate = couponTemplateMapper.selectOne(queryWrapper);
+            if (couponTemplate != null) {
+                request.setCouponTemplateCode(couponTemplate.getCode());
+            }
             request.setNumber(1);
             couponService.send(request);
         } catch (Exception e) {

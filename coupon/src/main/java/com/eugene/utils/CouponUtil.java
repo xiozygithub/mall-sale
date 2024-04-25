@@ -32,13 +32,13 @@ public class CouponUtil {
     /**
      * 生成优惠券Code
      * 规则：UCP + 券模版id % 10 + 雪花算法ID
-     * // todo 优化：如果仍然出现code重复，怎么解决？
+     * // 问题：如果仍然出现code重复，怎么解决？
      * 方案是：再后面追加一个发券发放张数（第几张）
      *
      * @return
      */
-    public static String getCouponCode(Long couponTemplateId) {
-        return String.format("UCP" + couponTemplateId % 10 + snowflake.nextId());
+    public static String getCouponCode(Long couponTemplateId, int index) {
+        return String.format("UCP" + couponTemplateId % 10 + snowflake.nextId() + index);
     }
 
     /**

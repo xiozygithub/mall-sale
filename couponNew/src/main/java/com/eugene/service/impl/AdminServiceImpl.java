@@ -128,10 +128,10 @@ public class AdminServiceImpl implements IAdminService {
             CouponTemplate couponTemplate = couponTemplateService.getOne(couponTemplateQueryWrapper, false);
             if (Objects.isNull(couponTemplate)) {
                 couponTemplateService.save(couponTemplateRemote);
-                couponTemplateCacheService.invalidateCouponTemplateCache(couponTemplate.getCode());
+                couponTemplateCacheService.invalidateCouponTemplateCache(couponTemplateRemote.getCode());
             } else {
                 couponTemplateService.updateById(couponTemplateRemote);
-                couponTemplateCacheService.invalidateCouponTemplateCache(couponTemplate.getCode());
+                couponTemplateCacheService.invalidateCouponTemplateCache(couponTemplateRemote.getCode());
             }
         }
     }

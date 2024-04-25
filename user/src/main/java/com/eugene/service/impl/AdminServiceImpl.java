@@ -151,7 +151,7 @@ public class AdminServiceImpl implements IAdminService {
             if (CollectionUtil.isEmpty(userList)) {
                 break;
             }
-            Map<Long, List<User>> userListMap = userList.stream().collect(Collectors.groupingBy(user -> user.getId() % 8));
+            Map<Long, List<User>> userListMap = userList.stream().collect(Collectors.groupingBy(user -> user.getMobile() % 8));
             for (List<User> users : userListMap.values()) {
                 Future<List<Long>> checkUserDataFuture = threadPool.submit(new CheckUserDataHandle(userShardingService, users));
                 List<Long> diffUserList = checkUserDataFuture.get(5, TimeUnit.MINUTES);
