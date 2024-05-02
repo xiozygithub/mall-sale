@@ -14,4 +14,6 @@ public interface ICouponActivityCacheService {
     CouponActivity getCouponActivityCache(Long couponActivityId);
 
     void invalidateCouponActivityCache(Long couponActivityId);
+
+    void setCouponActivityStatus(Long couponActivityId);
 }

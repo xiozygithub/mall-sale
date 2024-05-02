@@ -6,12 +6,20 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 192.168.204.81:8848
-        namespace: 4da593c3-13a6-4194-9b19-45f4bffcdfd5
-#        192.168.204.81
+#<<<<<<< HEAD
+#        server-addr: 192.168.204.81:8848
+#        namespace: 4da593c3-13a6-4194-9b19-45f4bffcdfd5
+##        192.168.204.81
+#      discovery:
+#        server-addr: 192.168.204.81:8848
+#        namespace: 4da593c3-13a6-4194-9b19-45f4bffcdfd5
+#=======
+        server-addr: 127.0.0.1:8848
+        namespace: 4d8cea9e-7a21-42f5-8329-adfb4435beb0
       discovery:
-        server-addr: 192.168.204.81:8848
-        namespace: 4da593c3-13a6-4194-9b19-45f4bffcdfd5
+        server-addr: 127.0.0.1:8848
+        namespace: 4d8cea9e-7a21-42f5-8329-adfb4435beb0
+#>>>>>>> upstream/develop
 logging:
   level:
     com.swp.feign: debug

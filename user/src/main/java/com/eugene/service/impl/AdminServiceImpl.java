@@ -158,8 +158,12 @@ public class AdminServiceImpl implements IAdminService {
             if (CollectionUtil.isEmpty(userList)) {
                 break;
             }
+//<<<<<<< HEAD
             //根据id将1000个用户进行分表，map的容量最大一千
             Map<Long, List<User>> userListMap = userList.stream().collect(Collectors.groupingBy(user -> user.getId() % 8));
+//=======
+//            Map<Long, List<User>> userListMap = userList.stream().collect(Collectors.groupingBy(user -> user.getMobile() % 8));
+//>>>>>>> upstream/develop
             for (List<User> users : userListMap.values()) {
                 //CheckUserDataHandle
                 Future<List<Long>> checkUserDataFuture = threadPool.submit(new CheckUserDataHandle(userShardingService, users));

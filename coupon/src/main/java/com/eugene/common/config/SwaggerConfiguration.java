@@ -25,8 +25,8 @@ public class SwaggerConfiguration {
     @Bean
     public OpenAPI springShopOpenApi() {
         return new OpenAPI()
-                .info(new Info().title("mall-user接口文档")
-                        .description("mall-user接口文档，openapi3.0 接口，用于前端对接")
+                .info(new Info().title("mall-coupon接口文档")
+                        .description("mall-coupon接口文档，openapi3.0 接口，用于前端对接")
                         .version("v0.0.1"));
     }
 }

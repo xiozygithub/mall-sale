@@ -68,7 +68,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
     // TODO 优化改为多线程自动发券
     @Override
     public Boolean send(SendCouponRequest request) {
-        // 优化：券模版信息放到Guava缓存中提高性能
+        // 亮点：券模版信息放到Guava缓存中提高性能
         CouponTemplate couponTemplateCache = couponTemplateCacheService.getCouponTemplateCache(request.getCouponTemplateCode());
         if (Objects.isNull(couponTemplateCache)) {
             log.error("券模版信息不存在");
@@ -77,9 +77,8 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
         // 自动发放优惠券券功能是程序配置调用，所以不需要校验券数量，直接发送
         List<Coupon> coupons = new ArrayList<>();
         for (int i = 0; i < request.getNumber(); i++) {
-            coupons.add(getCoupon(request, couponTemplateCache));
-            // todo 解决方案：解决code重复问题
-//            coupons.add(getCoupon(request, couponTemplateCache, i));
+            // 解决code重复问题
+            coupons.add(getCoupon(request, couponTemplateCache, i));
         }
         try {
             couponMapper.saveBatch(coupons);
@@ -96,7 +95,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
             couponCacheService.addUserCouponCode(request.getMobile(), coupon.getCode());
         }
  */
-        // 优化：优惠券信息保存到Redis中,同一批次一起保存，保障数据的准确性
+        // 亮点：优惠券信息保存到Redis中,同一批次一起保存，保障数据的准确性
         boolean redisResult = couponCacheService.batchSetCouponCache(coupons);
         if (!redisResult) {
             // 告警通知、邮件、钉钉、等等
@@ -105,10 +104,10 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
         return true;
     }
 
-    private static Coupon getCoupon(SendCouponRequest request, CouponTemplate couponTemplateCache) {
+    private static Coupon getCoupon(SendCouponRequest request, CouponTemplate couponTemplateCache, int index) {
         Coupon coupon = new Coupon();
         coupon.setCouponTemplateCode(request.getCouponTemplateCode());
-        coupon.setCode(getCouponCode(couponTemplateCache.getId()));
+        coupon.setCode(getCouponCode(couponTemplateCache.getId(), index));
         coupon.setUserId(request.getUserId());
         coupon.setMobile(request.getMobile());
         coupon.setStatus(CouponStatusEnum.AVAILABLE.getCode());
@@ -131,13 +130,13 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
     public CouponResponse getCoupon(String code) {
         CouponResponse response = null;
         Coupon couponCache = couponCacheService.getCouponCache(code);
-        // todo 重点关注：缓存穿透问题，直接返回不查询数据库
+        // 重点关注：缓存穿透问题，直接返回不查询数据库
         if (Objects.nonNull(couponCache) && couponCache.getCode().equals("default")) {
             // 命中了自定义的缓存Key,直接返回
             return null;
         }
         if (Objects.isNull(couponCache)) {
-            // 加锁，todo 加锁KEY
+            // 加锁，防止缓存击穿
             RLock lock = redissonClient.getLock(code);
             if (lock.tryLock()) {
                 try {
@@ -220,7 +219,6 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
     }
 
     private Coupon getCouponDB(String code) {
-        Coupon couponCache;
         QueryWrapper<Coupon> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", code);
         queryWrapper.eq("status", StatusEnum.AVAILABLE.getCode());
@@ -231,10 +229,38 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupon> impleme
             couponCacheService.setCouponCache(new Coupon("default"), 1L, TimeUnit.MINUTES);
             return null;
         } else {
-            couponCacheService.setCouponCache(coupon);
-            couponCache = coupon;
+            // 判断优惠券是否在有效期内
+            if (checkCouponIsAvailable(coupon)) {
+                couponCacheService.setCouponCache(coupon);
+                return coupon;
+            } else if (checkCouponIsExpired(coupon)) {
+                // 亮点：优惠券已过期，进行清理
+                couponCacheService.delUserCouponCode(coupon);
+                couponCacheService.delCouponCache(coupon);
+                coupon.setStatus(CouponStatusEnum.EXPIRED.getCode());
+                couponMapper.updateById(coupon);
+            }
         }
-        return couponCache;
+        return null;
+    }
+
+    /**
+     * 判断当前优惠券是否有效
+     * 当前是优惠券状态是生效、当前时间在优惠券可用范围内、
+     */
+    private boolean checkCouponIsAvailable(Coupon coupon) {
+        return coupon.getStatus().equals(CouponStatusEnum.AVAILABLE.getCode())
+                && coupon.getBeginTime().before(new Date())
+                && coupon.getEndTime().after(new Date());
+    }
+
+    /**
+     * 判断当前优惠券是否已过期
+     * 当前是优惠券状态是生效、当前时间在优惠券可用范围内、
+     */
+    private boolean checkCouponIsExpired(Coupon coupon) {
+        return coupon.getStatus().equals(CouponStatusEnum.EXPIRED.getCode())
+                || coupon.getEndTime().before(new Date());
     }
 
 }

@@ -25,6 +25,7 @@ public class CouponActivityCacheServiceImpl implements ICouponActivityCacheServi
 
     @Autowired
     private RedisUtil redisUtil;
+    public static final String COUPON_ACTIVITY_STATUS_KEY = "mall_coupon:couponActivityStatus:%s";
 
     @Override
     public void setCouponActivityCache(CouponActivity couponActivity) {
@@ -59,5 +60,10 @@ public class CouponActivityCacheServiceImpl implements ICouponActivityCacheServi
     @Override
     public void invalidateCouponActivityCache(Long couponActivityId) {
         redisUtil.del(getCouponActivityKey(couponActivityId));
+    }
+
+    @Override
+    public void setCouponActivityStatus(Long couponActivityId) {
+        redisUtil.lSet(COUPON_ACTIVITY_STATUS_KEY, couponActivityId);
     }
 }

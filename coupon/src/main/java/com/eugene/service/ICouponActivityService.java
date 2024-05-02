@@ -1,10 +1,7 @@
 package com.eugene.service;
 
 import com.eugene.common.exception.BusinessException;
-import com.eugene.controller.request.AddCouponActivityRequest;
-import com.eugene.controller.request.CouponActivityRequest;
-import com.eugene.controller.request.ReceiveCouponRequest;
-import com.eugene.controller.request.UserCouponRequest;
+import com.eugene.controller.request.*;
 import com.eugene.controller.response.CouponActivityResponse;
 import com.eugene.controller.response.CouponResponse;
 
@@ -24,4 +21,8 @@ public interface ICouponActivityService {
     CouponActivityResponse getCouponActivityDetail(CouponActivityRequest request);
 
     CouponResponse receive(ReceiveCouponRequest request) throws BusinessException;
+
+    void timingSendCoupon(ExecuteActivityRequest executeActivityRequest);
+
+    void timingSendCouponSchedule();
 }
